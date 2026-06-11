@@ -15,6 +15,10 @@
     /* Bordes casi invisibles */
     --error-color: #E53E3E;
     /* Rojo de alerta */
+    --success-color: #15803D;
+    /* Verde institucional para confirmaciones */
+    --success-bg: #DCFCE7;
+    /* Fondo verde sutil */
 }
 
 * {
@@ -165,7 +169,7 @@ body {
     border-left: 1px solid var(--border-subtle);
 }
 
-/* Tarjeta contenedora del Formulario Destacado */
+/* Tarjeta contenedora del Formulario Destacado y Pantalla de Respuesta */
 .card-formulario-central {
     background-color: #FFFFFF;
     padding: 40px;
@@ -218,7 +222,7 @@ body {
     box-shadow: 0 4px 12px rgba(43, 108, 176, 0.06);
 }
 
-/* Nota Legal Integrada inferior */
+/* Nota Legal e Informativa */
 .nota-legal-dni {
     font-size: 13px;
     line-height: 1.5;
@@ -231,7 +235,89 @@ body {
     text-align: left;
 }
 
-/* --- BOTÓN DE ENVÍO INTEGRADO --- */
+/* --- COMPONENTES ESPECÍFICOS DE LA PANTALLA DE ÉXITO --- */
+.bloque-respuesta-centrado {
+    max-width: 550px !important;
+    margin: 0 auto;
+}
+
+.contenedor-icono-exito {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.icono-svg-confirmado {
+    width: 64px;
+    height: 64px;
+    background-color: var(--success-bg);
+    color: var(--success-color);
+    padding: 12px;
+    border-radius: 50%;
+}
+
+.titulo-exito {
+    color: var(--success-color) !important;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.parrafo-exito {
+    font-size: 14.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ticket-confirmacion {
+    background-color: var(--bg-light);
+    border: 1px dashed var(--border-subtle);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.ticket-linea {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.ticket-linea:last-child {
+    border-bottom: none;
+}
+
+.ticket-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.ticket-valor {
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.ticket-valor.destacado {
+    color: var(--accent-blue);
+}
+
+.alerta-recordatorio-ticket {
+    background-color: #E8F0FE;
+    /* Azul tenue de información */
+    border-left: 4px solid var(--accent-blue);
+    padding: 14px 16px;
+    border-radius: 4px;
+    text-align: left;
+    margin-bottom: 30px;
+    font-size: 13px;
+    color: #1967D2;
+    line-height: 1.5;
+}
+
+/* --- BOTONES DE ENVÍO E INTERACCIÓN --- */
 .contenedor-boton-envio {
     display: flex;
 }
@@ -248,6 +334,8 @@ body {
     transition: background-color 0.2s;
     width: 100%;
     text-align: center;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
 }
 
 .btn-modern-submit:hover {
@@ -279,7 +367,6 @@ body {
     margin-top: 4px;
 }
 
-/* Botón de retorno estilizado para la sección interna */
 .btn-secundario-admin {
     display: inline-flex;
     align-items: center;
@@ -330,7 +417,6 @@ body {
     color: var(--text-main);
 }
 
-/* Transición fluida base para las interacciones en las celdas */
 .admin-table tr {
     transition: background-color 0.3s ease, opacity 0.4s ease;
 }
@@ -339,7 +425,6 @@ body {
     border-bottom: none;
 }
 
-/* Clases específicas de optimización para las filas del administrador */
 .col-id {
     color: var(--text-muted);
     font-weight: bold;
@@ -366,7 +451,6 @@ body {
     padding: 40px !important;
 }
 
-/* --- BOTÓN DE ELIMINACIÓN CON TRANSICIÓN PREMIUM --- */
 .btn-tabla-eliminar {
     background-color: #FFF5F5;
     color: var(--error-color);
@@ -390,7 +474,6 @@ body {
     box-shadow: 0 2px 6px rgba(229, 62, 62, 0.15);
 }
 
-/* Estado de bloqueo destructivo controlado por JS durante la baja */
 .btn-tabla-eliminar.baja-activa {
     background-color: var(--police-dark) !important;
     border-color: var(--police-dark) !important;
@@ -398,7 +481,6 @@ body {
     cursor: not-allowed;
 }
 
-/* --- ANIMACIÓN FISICA FLASH PARA FILA BORRADA --- */
 .fila-flash-baja {
     animation: flashDesvanecer 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -416,117 +498,6 @@ body {
         background-color: #FED7D7;
         opacity: 0;
         transform: scale(0.99);
-    }
-}
-
-/* --- VISTA DE RESPUESTA / ÉXITO --- */
-.card-respuesta-clean {
-    max-width: 550px;
-    width: 100%;
-    background: #FFFFFF;
-    padding: 40px;
-    border-radius: 8px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
-
-.status-badge.exito {
-    background-color: #DCFCE7;
-    color: #15803D;
-}
-
-.status-badge.error {
-    background-color: #FEE2E2;
-    color: #B91C1C;
-}
-
-/* --- COMPONENTE TICKET DE CONFIRMACIÓN --- */
-.ticket-confirmacion {
-    margin-top: 30px;
-    border-top: 2px dashed var(--border-subtle);
-    border-bottom: 2px dashed var(--border-subtle);
-    padding: 25px 0;
-}
-
-.ticket-linea {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    font-size: 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.ticket-linea:last-child {
-    border-bottom: none;
-}
-
-.ticket-linea span:first-child {
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.ticket-linea span:last-child {
-    color: var(--text-main);
-    font-weight: 600;
-    text-align: right;
-}
-
-.mensaje-estado {
-    margin-bottom: 20px;
-}
-
-.mensaje-estado h3 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 10px;
-}
-
-.mensaje-estado.exito-text h3 {
-    color: var(--police-blue);
-}
-
-.mensaje-estado.error-text h3 {
-    color: var(--error-color);
-}
-
-.input-error {
-    border-color: var(--error-color) !important;
-    background-color: #FFF5F5 !important;
-}
-
-.input-error:focus {
-    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important;
-    border-color: var(--error-color) !important;
-}
-
-.error-mensaje-input {
-    color: var(--error-color);
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 6px;
-    display: block;
-    animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-3px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -570,7 +541,6 @@ body {
     }
 }
 
-/* Optimización simétrica de la barra informativa en dispositivos móviles */
 @media (max-width: 576px) {
     .barra-datos-tramite {
         display: grid !important;
