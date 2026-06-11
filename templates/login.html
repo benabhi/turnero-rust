@@ -1,0 +1,89 @@
+{% extends "layout" %}
+
+{% block title %}Control Interno - Autenticación{% endblock %}
+
+{% block content %}
+<div class="wrapper-pantalla-central">
+    <div class="bloque-tramite-limpio" style="max-width: 450px;">
+
+        <header class="encabezado-formulario-unico">
+            <h2>Acceso Restringido</h2>
+            <p>Panel de Control y Monitoreo de Solicitudes de Antecedentes.</p>
+        </header>
+
+        <div class="card-formulario-central">
+            <form action="/admin/login" method="POST">
+                <div class="grid-inputs" style="grid-template-columns: 1fr;">
+
+                    <div class="form-group-modern">
+                        <label>Usuario Oficial</label>
+                        <input type="text" name="usuario" required placeholder="Ej. administrador" autocomplete="username">
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Contraseña de Seguridad</label>
+                        <input type="password" name="clave" required placeholder="••••••••" autocomplete="current-password">
+                    </div>
+
+                </div>
+
+                <div class="contenedor-boton-envio" style="margin-top: 10px;">
+                    <button type="button" id="btn-login" class="btn-modern-submit">Ingresar al Sistema</button>
+                </div>
+            </form>
+
+            <!-- Enlace discreto para regresar al formulario público de turnos -->
+            <div style="margin-top: 20px; text-align: center; border-top: 1px solid #e9ecef; padding-top: 15px;">
+                <a href="/" style="font-size: 14px; color: #6c757d; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s;" onmouseover="this.style.color='#495057'" onmouseout="this.style.color='#6c757d'">
+                    ← Volver al Turnero Público
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('btn-login');
+    const form = document.querySelector('form');
+
+    btn.addEventListener('click', async function () {
+        document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+        document.querySelectorAll('.error-mensaje-input').forEach(el => el.remove());
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('/admin/login', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+
+            if (response.ok) {
+                // Credenciales válidas: Redirección física al panel de turnos
+                window.location.href = '/admin/turnos';
+            } else {
+                // Error de credenciales (401 Unauthorized)
+                const errores = await response.json();
+
+                Object.keys(errores).forEach(campo => {
+                    const mensaje = errores[campo];
+                    if (mensaje) {
+                        const inputElement = form.querySelector(`[name="${campo}"]`);
+                        if (inputElement) {
+                            inputElement.classList.add('input-error');
+                            const errorSpan = document.createElement('span');
+                            errorSpan.className = 'error-mensaje-input';
+                            errorSpan.textContent = mensaje;
+                            inputElement.parentNode.insertBefore(errorSpan, inputElement.nextSibling);
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error de conexión con el módulo de seguridad.');
+        }
+    });
+</script>
+{% endblock %}

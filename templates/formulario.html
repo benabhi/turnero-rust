@@ -1,0 +1,201 @@
+{% extends "layout" %}
+
+{% block title %}Policía de Río Negro - Dirección Judicial{% endblock %}
+
+{% block content %}
+
+<div class="wrapper-pantalla-central">
+    <div class="bloque-tramite-limpio">
+
+        <header class="encabezado-formulario-unico">
+            <h2>Certificado de Antecedentes</h2>
+            <p>Plataforma oficial de reserva de turnos para atención presencial en la Dirección Judicial de la Policía de Río Negro.</p>
+
+            <div class="barra-datos-tramite">
+                <div class="dato-item-linea">
+                    <svg class="icono-svg-dato-reloj" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <div class="dato-texto-bloque">
+                        <span class="titulo-dato">Atención:</span>
+                        <span class="valor-dato">08:00 a 14:00 hs (días hábiles)</span>
+                    </div>
+                </div>
+
+                <div class="linea-divisoria-dato ocu-movil"></div>
+
+                <div class="dato-item-linea">
+                    <svg class="icono-svg-dato-dni" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                        <circle cx="9" cy="12" r="2"></circle>
+                        <line x1="15" y1="10" x2="19" y2="10"></line>
+                        <line x1="15" y1="14" x2="19" y2="14"></line>
+                    </svg>
+                    <div class="dato-texto-bloque">
+                        <span class="titulo-dato">Requisito:</span>
+                        <span class="valor-dato">DNI físico obligatorio</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card-formulario-central">
+            <form action="/sacar-turno" method="POST">
+                <div class="grid-inputs">
+
+                    <div class="form-group-modern">
+                        <label>Fecha de Asistencia</label>
+                        <input type="date" id="input-fecha-tramite" name="fecha" value="{{ contexto.old_fecha }}" min="{{ contexto.min_fecha }}" required
+                            class="{% if contexto.errores.fecha %}input-error{% endif %}">
+                        {% if contexto.errores.fecha %}
+                            <span class="error-mensaje-input">{{ contexto.errores.fecha }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Horario Disponible</label>
+
+                        {# Alerta condicional interna por fin de semana #}
+                        {% if contexto.es_fin_de_semana %}
+                            <div class="alerta-fin-semana" style="background-color: #fce8e6; color: #a81c1c; border: 1px solid #f5c2c2; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                Advertencia: No hay atención sábados ni domingos.
+                            </div>
+                        {% endif %}
+
+                        <select name="hora" required class="{% if contexto.errores.hora %}input-error{% endif %}">
+                            <option value="">Seleccione...</option>
+                            {% for h in contexto.horarios %}
+                            <option value="{{ h.hora }}"
+                                {% if h.hora == contexto.old_hora %}selected{% endif %}
+                                {% if not h.disponible %}disabled class="option-disabled"{% endif %}>
+                                {{ h.hora }} {{ h.mensaje }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if contexto.errores.hora %}
+                            <span class="error-mensaje-input">{{ contexto.errores.hora }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Nombre / s</label>
+                        <input type="text" name="nombre" value="{{ contexto.old_nombre }}" required
+                            placeholder="Ej. Juan Carlos"
+                            class="{% if contexto.errores.nombre %}input-error{% endif %}">
+                        {% if contexto.errores.nombre %}
+                            <span class="error-mensaje-input">{{ contexto.errores.nombre }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Apellido / s</label>
+                        <input type="text" name="apellido" value="{{ contexto.old_apellido }}" required
+                            placeholder="Ej. Pérez"
+                            class="{% if contexto.errores.apellido %}input-error{% endif %}">
+                        {% if contexto.errores.apellido %}
+                            <span class="error-mensaje-input">{{ contexto.errores.apellido }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Documento (DNI)</label>
+                        <input type="text" name="dni" value="{{ contexto.old_dni }}" required
+                            placeholder="Sin puntos ni espacios"
+                            pattern="[0-9]{7,9}" inputmode="numeric"
+                            class="{% if contexto.errores.dni %}input-error{% endif %}">
+                        {% if contexto.errores.dni %}
+                            <span class="error-mensaje-input">{{ contexto.errores.dni }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label>Teléfono Celular</label>
+                        <input type="tel" name="telefono" value="{{ contexto.old_telefono }}" required
+                            placeholder="Ej. 2920123456"
+                            class="{% if contexto.errores.telefono %}input-error{% endif %}">
+                        {% if contexto.errores.telefono %}
+                            <span class="error-mensaje-input">{{ contexto.errores.telefono }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group-modern full-width">
+                        <label>Correo Electrónico</label>
+                        <input type="email" name="email" value="{{ contexto.old_email }}" required
+                            placeholder="Ej. juan@gmail.com"
+                            class="{% if contexto.errores.email %}input-error{% endif %}">
+                        {% if contexto.errores.email %}
+                            <span class="error-mensaje-input">{{ contexto.errores.email }}</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <p class="nota-legal-dni">
+                    Al confirmar el turno, usted declara conocer que es requisito excluyente presentarse únicamente en <b>días hábiles</b> con el <b>DNI físico en mano</b> en la Dirección Judicial de la Policía de Río Negro para la validación de identidad. No se admitirán copias ni formatos digitales.
+                </p>
+
+                <div class="contenedor-boton-envio">
+                    <button type="button" id="btn-confirmar" class="btn-modern-submit">Confirmar Reserva de Turno</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Manejo del cambio de fecha asíncrono utilizando la URL base de origen
+    document.getElementById('input-fecha-tramite').addEventListener('change', function() {
+        if (this.value) {
+            window.location.href = window.location.origin + '/?fecha=' + this.value;
+        }
+    });
+
+    const botonConfirmar = document.getElementById('btn-confirmar');
+    const form = document.querySelector('form');
+
+    botonConfirmar.addEventListener('click', async function (e) {
+        document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+        document.querySelectorAll('.error-mensaje-input').forEach(el => el.remove());
+
+        const formData = new FormData(form);
+        const urlDestino = window.location.origin + '/sacar-turno';
+
+        try {
+            const response = await fetch(urlDestino, {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+
+            if (response.ok) {
+                const htmlRespuesta = await response.text();
+                document.body.innerHTML = htmlRespuesta;
+            } else {
+                const errores = await response.json();
+
+                Object.keys(errores).forEach(campo => {
+                    const mensaje = errores[campo];
+                    if (mensaje) {
+                        const inputElement = form.querySelector(`[name="${campo}"]`);
+                        if (inputElement) {
+                            inputElement.classList.add('input-error');
+                            const errorSpan = document.createElement('span');
+                            errorSpan.className = 'error-mensaje-input';
+                            errorSpan.textContent = mensaje;
+                            inputElement.parentNode.insertBefore(errorSpan, inputElement.nextSibling);
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error de red detectado:', error);
+            alert('Ocurrió un error al intentar comunicarse con el servidor.');
+        }
+    });
+</script>
+{% endblock %}

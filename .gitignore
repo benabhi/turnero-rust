@@ -1,0 +1,15 @@
+# Compilación
+/target
+
+# Bases de datos
+*.db
+*.sqlite
+
+# Credenciales y Configuración
+.env
+*.env
+secrets.edn
+
+# Entornos virtuales (Python)
+.venv/
+__pycache__/

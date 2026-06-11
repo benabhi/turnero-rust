@@ -1,0 +1,143 @@
+{% extends "layout" %}
+
+{% block title %}Control Interno - Turnos de Antecedentes{% endblock %}
+
+{% block content %}
+
+<div class="admin-wrapper" style="padding: 15px; max-width: 100%; box-sizing: border-box;">
+
+    <div class="admin-header-flex" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <div style="min-width: 280px; flex: 1;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Panel de Turnos</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;">Monitoreo en tiempo real de solicitudes de antecedentes penales.</p>
+        </div>
+
+        <div class="acciones-header-admin" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; width: auto;">
+            <a href="/" class="btn-secundario-admin" style="background-color: transparent; border-color: #ced4da; color: #495057; text-decoration: none; padding: 8px 12px; font-size: 0.85rem; white-space: nowrap;">
+                ← Volver al Turnero
+            </a>
+
+            {% if historial %}
+                <a href="/admin/turnos" class="btn-secundario-admin" style="background-color: #f1f3f5; color: #495057; text-decoration: none; padding: 8px 12px; font-size: 0.85rem; white-space: nowrap;">
+                    🔍 Ver Solo Turnos Vigentes
+                </a>
+            {% else %}
+                <a href="/admin/turnos?historial=true" class="btn-secundario-admin" style="background-color: #e8f0fe; color: #1a73e8; border-color: #d2e3fc; text-decoration: none; padding: 8px 12px; font-size: 0.85rem; white-space: nowrap;">
+                    📦 Ver Historial Completo (Pasados)
+                </a>
+            {% endif %}
+
+            <a href="/admin/logout" class="btn-secundario-admin" style="border-color: #f5c2c2; color: #c53030; text-decoration: none; padding: 8px 12px; font-size: 0.85rem; white-space: nowrap;">
+                Cerrar Sesión →
+            </a>
+        </div>
+    </div>
+
+    <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #dee2e6; border-radius: 8px; background: #ffffff;">
+        <table class="admin-table" style="width: 100%; min-width: 850px; border-collapse: collapse; border: none; margin: 0;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">ID</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Fecha</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Hora</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Ciudadano</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Documento</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Correo</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Contacto</th>
+                    <th style="width: 120px; text-align: center; padding: 12px; border-bottom: 2px solid #dee2e6;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in turnos %}
+                <tr style="border-bottom: 1px solid #dee2e6; transition: background-color 0.2s;">
+                    <td class="col-id" style="padding: 12px;">#{{ t.id }}</td>
+                    <td style="padding: 12px; white-space: nowrap;">{{ t.fecha }}</td>
+                    <td style="padding: 12px; white-space: nowrap;"><span class="badge-hora-tabla">{{ t.hora }} hs</span></td>
+                    <td class="col-ciudadano" style="padding: 12px; font-weight: 500;">{{ t.apellido }}, {{ t.nombre }}</td>
+                    <td style="padding: 12px; white-space: nowrap;">{{ t.dni }}</td>
+                    <td style="padding: 12px;">{{ t.email }}</td>
+                    <td class="col-contacto" style="padding: 12px; white-space: nowrap;">{{ t.telefono }}</td>
+                    <td style="text-align: center; padding: 12px;">
+                        <form action="/admin/borrar/{{ t.id }}" method="POST" class="form-borrar-registro" style="display: inline;">
+                            <button type="submit" class="btn-tabla-eliminar">
+                                <span class="txt-eliminar">Eliminar</span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="tabla-vacia" style="padding: 30px; text-align: center; color: #6c757d;">
+                        {% if historial %}
+                            No se registran turnos históricos en la base de datos.
+                        {% else %}
+                            No se registran solicitudes activas y vigentes para los próximos días.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 576px) {
+        .acciones-header-admin {
+            width: 100% !important;
+            justify-content: space-between;
+        }
+        .acciones-header-admin a {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
+        }
+    }
+</style>
+
+<script>
+    document.querySelectorAll('.form-borrar-registro').forEach(form => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fila = this.closest('tr');
+            const boton = this.querySelector('.btn-tabla-eliminar');
+            const nombreCiudadano = fila.querySelector('.col-ciudadano').textContent;
+            const url = this.getAttribute('action');
+
+            if (confirm(`¿Está seguro de que desea eliminar el turno de ${nombreCiudadano}?`)) {
+
+                boton.classList.add('baja-activa');
+                boton.querySelector('.txt-eliminar').textContent = 'Borrando...';
+                fila.classList.add('fila-flash-baja');
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        setTimeout(() => {
+                            fila.remove();
+
+                            const filasRestantes = document.querySelectorAll('.admin-table tbody tr');
+                            if (filasRestantes.length === 0) {
+                                window.location.reload();
+                            }
+                        }, 400);
+                    } else {
+                        alert('No se pudo eliminar el registro en el servidor.');
+                        boton.classList.remove('baja-activa');
+                        boton.querySelector('.txt-eliminar').textContent = 'Eliminar';
+                        fila.classList.remove('fila-flash-baja');
+                    }
+                } catch (error) {
+                    console.error('Error en la conexión:', error);
+                    alert('Error de red al intentar borrar el turno.');
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

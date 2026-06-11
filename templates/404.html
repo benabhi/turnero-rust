@@ -1,0 +1,28 @@
+{% extends "layout" %}
+
+{% block title %}Policía de Río Negro - Turno Confirmado{% endblock %}
+
+{% block content %}
+
+<div class="wrapper-pantalla-central"
+    style="align-items: flex-start; padding-top: 100px; min-height: calc(100vh - 60px); padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+    <div class="card-respuesta-clean" style="text-align: center; margin: 0 auto;">
+
+        <span class="status-badge error">Error 404</span>
+
+        <div class="mensaje-estado error-text">
+            <h3>Página no encontrada</h3>
+            <p
+                style="color: var(--text-muted); margin-top: 15px; font-size: 15px; line-height: 1.5; margin-bottom: 30px;">
+                Lo sentimos, la dirección web a la que intenta acceder no existe o ha sido movida temporalmente.
+            </p>
+        </div>
+
+        <a href="/" class="btn-secundario-admin" style="width: 100%; justify-content: center;">
+            ← Volver al Formulario de Turnos
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

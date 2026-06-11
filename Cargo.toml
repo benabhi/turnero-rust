@@ -1,0 +1,22 @@
+[package]
+name = "turnero"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+salvo = { version = "0.72", features = ["logging"] }
+rust-embed = "8.5"
+mime_guess = "2.0"
+minijinja = { version = "2.1", features = ["loader"] }
+serde = { version = "1.0", features = ["derive"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+[profile.release]
+opt-level = "z"     # Optimiza agresivamente por tamaño de binario (ignora velocidad si es necesario)
+lto = true          # Habilita Link-Time Optimization (analiza todo el árbol de dependencias para borrar código muerto)
+codegen-units = 1   # Reduce las unidades de generación a 1. Ralentiza la compilación pero maximiza la optimización
+panic = "abort"     # Elimina la infraestructura de "unwinding" para pánicos. Achica mucho el binario
+strip = true        # Remueve automáticamente los símbolos de debug y tablas de nombres del ejecutable final
